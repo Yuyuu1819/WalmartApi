@@ -32,4 +32,24 @@ public class ProductService {
         }
         return productMapper.mapToDto(product.get());
     }
+
+    public Product updateProduct(Long id, Product product) {
+        Optional<ProductEntity> currentProduct = productRepository.findById(id);
+
+        //Lanzamos errorsito uff
+        if (currentProduct.isEmpty()) { throw new NotFound("Product not found :c"); }
+
+        //Asignamos la nueva info
+        ProductEntity updatedProduct = productMapper.mapToEntity(product);
+        updatedProduct.setId(id);
+        ProductEntity updatedEntity = productRepository.save(updatedProduct);
+
+        return productMapper.mapToDto(updatedEntity);
+    }
+
+    public void deleteProduct(Long id) {
+        //Lanzamos errorsito uff
+        if (!productRepository.existsById(id)) { throw new NotFound("Product not found :c"); }
+        productRepository.deleteById(id); //adios mundo cruel
+    }
 }
